@@ -24,6 +24,7 @@ class Atm:
         status = self.current_card.account.withdraw(amount)
         if status:
             print("Withdrawal Successful")
+            self.print_receipt(amount, "Withdrawal")
             return
         print("Not enough Balance")
         return
@@ -34,6 +35,7 @@ class Atm:
             return
         self.current_card.account.deposit(amount)
         print("Deposit Successful")
+        self.print_receipt(amount, "Deposit")
 
     def show_remaining_balance(self):
         if not self.is_authenticated:
@@ -41,6 +43,16 @@ class Atm:
             return
         balance = self.current_card.account.get_balance()
         print(f"Remaining Balance is - {balance}")
+
+    def print_receipt(self, amount, transaction_type):
+        print()
+        print("--"*10 + "Receipt" + "--"*10)
+        print(f"Amount      : {amount} ₹")
+        print(f"Transaction : {transaction_type}")
+        print(f"Card No     : ****{str(self.current_card.get_card_no())[-4:]}")
+        print(f"Balance     : {self.current_card.account.get_balance()} ₹")
+        print("--"*25)
+        print()
 
     def eject_card(self):
         print("Card ejected. Thank you")
