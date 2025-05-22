@@ -14,3 +14,4 @@ class Account:
 
     def deposit(self, amount):
         self.balance = self.balance + amount
+        return True

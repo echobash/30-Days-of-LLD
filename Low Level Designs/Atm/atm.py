@@ -1,3 +1,6 @@
+from transactionStrategy import TransactionStrategy
+
+
 class Atm:
     def __init__(self):
         self.current_card = None
@@ -17,45 +20,26 @@ class Atm:
         print("Sorry!! Incorrect Pin entered")
         return False
 
-    def withdraw_money(self, amount):
+    def execute_transaction(self, transaction_strategy: TransactionStrategy, amount: int = None) -> None:
+        if not self.current_card:
+            print("Please enter the card")
+            return
         if not self.is_authenticated:
-            print("Enter your pin first")
+            print("Please enter the pin")
             return
-        status = self.current_card.account.withdraw(amount)
-        if status:
-            print("Withdrawal Successful")
-            self.print_receipt(amount, "Withdrawal")
-            return
-        print("Not enough Balance")
-        return
+        transaction_strategy.execute(self, amount)
 
-    def deposit_money(self, amount):
-        if not self.is_authenticated:
-            print("Enter your pin first")
-            return
-        self.current_card.account.deposit(amount)
-        print("Deposit Successful")
-        self.print_receipt(amount, "Deposit")
-
-    def show_remaining_balance(self):
-        if not self.is_authenticated:
-            print("Enter your pin first")
-            return
-        balance = self.current_card.account.get_balance()
-        print(f"Remaining Balance is - {balance}")
-
-    def print_receipt(self, amount, transaction_type):
+    def print_receipt(self, amount: int, transaction_type: str) -> None:
         print()
-        print("--"*10 + "Receipt" + "--"*10)
-        print(f"Amount      : {amount} ₹")
+        print("--" * 10 + "Receipt" + "--" * 10)
         print(f"Transaction : {transaction_type}")
-        print(f"Card No     : ****{str(self.current_card.get_card_no())[-4:]}")
+        print(f"Amount      : {amount} ₹")
         print(f"Balance     : {self.current_card.account.get_balance()} ₹")
-        print("--"*25)
+        print(f"Card No     : ****{str(self.current_card.get_card_no())[-4:]}")
+        print("--" * 25)
         print()
 
     def eject_card(self):
         print("Card ejected. Thank you")
         self.is_authenticated = False
         self.current_card = None
-
